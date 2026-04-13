@@ -60,7 +60,6 @@
 <header>📦 Inventory Dashboard</header>
 
 <div class="container">
-
   <div class="grid">
 
     <!-- CHART -->
@@ -69,7 +68,7 @@
       <canvas id="chart"></canvas>
     </div>
 
-    <!-- SIDE LISTS -->
+    <!-- LISTS -->
     <div>
       <div class="card">
         <h3>Out of Stock</h3>
@@ -83,30 +82,28 @@
     </div>
 
   </div>
-
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwnPCIoNap3W-lZcPN8IB1muBno88jDUhutHZ-PS6jMiUeVoPSKvBzvn2EMr1-8ARao/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwJe6Q9Ny4Vhq_tGjPJYHd6t4EeVuApFiYQBYWloo9EwhHQ25iDTMZc3p-mKAm81xPV/exec";
 
 let chart;
 
 // ======================
-// LOAD DATA
+// LOAD DATA (JSONP)
 // ======================
-async function loadData() {
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
+function loadData() {
+  const script = document.createElement("script");
+  script.src = API_URL + "?callback=handleData";
+  document.body.appendChild(script);
+}
 
-    console.log("DATA:", data); // debug
-
-    processData(data);
-
-  } catch (err) {
-    console.error("ERROR:", err);
-    alert("Error loading data. Check console.");
-  }
+// ======================
+// HANDLE DATA
+// ======================
+function handleData(data) {
+  console.log("DATA:", data);
+  processData(data);
 }
 
 // ======================
@@ -152,20 +149,14 @@ function renderChart(labels, data, colors) {
     data: {
       labels,
       datasets: [{
-        label: "Cantidad",
         data,
         backgroundColor: colors,
         borderRadius: 6
       }]
     },
     options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
@@ -177,7 +168,7 @@ function renderList(id, items, highlight) {
   const el = document.getElementById(id);
   el.innerHTML = "";
 
-  if (items.length === 0) {
+  if (!items.length) {
     el.innerHTML = "<li>None</li>";
     return;
   }
@@ -185,15 +176,11 @@ function renderList(id, items, highlight) {
   items.forEach(item => {
     const li = document.createElement("li");
     li.textContent = item;
-
     if (highlight) li.classList.add("danger");
-
     el.appendChild(li);
   });
 }
 
-// ======================
-// INIT
 // ======================
 loadData();
 </script>
