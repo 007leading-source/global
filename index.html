@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>POS</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <h1>POS</h1>
+  <button onclick="goTo('inventory')">Inventario</button>
+  <button onclick="goTo('sale')">Nueva Venta</button>
+  <button onclick="goTo('customer')">Nuevo Cliente</button>
+</div>
+
+<!-- INVENTORY -->
+<div id="inventory" class="screen">
+
+  <button onclick="goTo('home')">←</button>
+  <h2>Inventario</h2>
+
+  <button onclick="openProductForm()">➕ Nuevo Producto</button>
+
+  <input placeholder="Buscar..." oninput="filterProducts(this.value)">
+
+  <!-- DASHBOARD -->
+  <div class="card">
+    <h3>Valor Inventario</h3>
+    <p id="inventoryValue"></p>
+  </div>
+
+  <div class="card">
+    <h3>Bajo stock</h3>
+    <ul id="lowStock"></ul>
+  </div>
+
+  <div class="card">
+    <h3>Sin stock</h3>
+    <ul id="outStock"></ul>
+  </div>
+
+  <button onclick="toggleChartMode()">Cambiar gráfico</button>
+  <h3 id="chartTitle"></h3>
+  <canvas id="chart"></canvas>
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sort('Name')">Producto</th>
+        <th onclick="sort('Stock')">Stock</th>
+        <th onclick="sort('MinStock')">Min</th>
+        <th>Costo</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="productsTable"></tbody>
+  </table>
+
+</div>
+
+<!-- SALE -->
+<div id="sale" class="screen">
+
+  <button onclick="goTo('home')">←</button>
+  <h2>Nueva Venta</h2>
+
+  <select id="customerSelect"></select>
+
+  <input placeholder="Buscar producto..." oninput="searchProducts(this.value)">
+  <div id="searchResults"></div>
+
+  <div id="cart"></div>
+
+  <input id="discount" placeholder="Descuento" oninput="updateTotals()">
+
+  <p>Subtotal: $<span id="subtotal">0</span></p>
+  <p>IVA: $<span id="iva">0</span></p>
+  <p>Total: $<span id="total">0</span></p>
+
+  <button onclick="createSale()">Generar Venta</button>
+
+</div>
+
+<!-- CUSTOMER -->
+<div id="customer" class="screen">
+
+  <button onclick="goTo('home')">←</button>
+  <h2>Nuevo Cliente</h2>
+
+  <input id="cName" placeholder="Nombre">
+  <input id="cPhone" placeholder="Teléfono">
+  <input id="cEmail" placeholder="Email">
+  <input id="cAddress" placeholder="Dirección">
+  <input id="cRFC" placeholder="RFC">
+  <input id="cNotes" placeholder="Notas">
+
+  <button onclick="createCustomer()">Guardar</button>
+
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="productModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Nuevo Producto</h3>
+
+    <input id="pName" placeholder="Nombre">
+    <input id="pBrand" placeholder="Marca">
+    <input id="pModel" placeholder="Modelo">
+    <input id="pCategory" placeholder="Categoría">
+    <input id="pUnit" placeholder="Unidad">
+    <input id="pCost" placeholder="Costo">
+    <input id="pPrice" placeholder="Precio">
+    <input id="pStock" placeholder="Stock">
+    <input id="pMinStock" placeholder="Min Stock">
+    <input id="pSupplier" placeholder="Proveedor">
+    <input id="pDesc" placeholder="Descripción">
+
+    <button onclick="createProduct()">Guardar</button>
+    <button onclick="closeProductForm()">Cerrar</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
